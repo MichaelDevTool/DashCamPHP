@@ -4,7 +4,6 @@ require_once 'config.php';
 
 $sessionToken = '';
 
-// Función para hacer login y obtener el token de sesión
 function login() {
     global $sessionToken;
 
@@ -32,15 +31,15 @@ function login() {
 
     if ($response !== false) {
         $responseData = json_decode($response, true);
-
-        if ($responseData['result'] === 0) {
+        if (isset($responseData['result']) && $responseData['result'] === 0) {
             $sessionToken = $responseData['jsession'] ?? $responseData['JSESSIONID'];
-            echo "Inicio de sesión exitoso. Token de sesión: " . $sessionToken;
         } else {
             echo "Error al iniciar sesión: " . print_r($responseData, true);
+            exit;
         }
     } else {
         echo "Error al realizar la solicitud de inicio de sesión.";
+        exit;
     }
 }
 
@@ -51,25 +50,46 @@ if (!isset($_GET['devIdno'])) {
 
 $devIdno = $_GET['devIdno'];
 
-// Si la sesión no ha sido iniciada, realizar login
 if (empty($sessionToken)) {
     login();
 }
 
-// Construir la URL del video con el devIdno y el sessionToken
-$videoUrl = "http://dvr02.dashcam.pe/808gps/open/player/video.html?lang=en&devIdno=$devIdno&jsession=$sessionToken";
-
+$videoUrl1 = "http://dvr02.dashcam.pe/808gps/open/player/video.html?lang=en&devIdno=$devIdno&jsession=$sessionToken&channel=1&chns=1,1,2";
+$videoUrl2 = "http://dvr02.dashcam.pe/808gps/open/player/video.html?lang=en&devIdno=$devIdno&jsession=$sessionToken&channel=1&chns=0,1,2";
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video for Device ID: <?php echo htmlspecialchars($devIdno); ?></title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Videos for Device ID: <?php echo htmlspecialchars($devIdno); ?></title>
+    <link rel="stylesheet" href="css/styles.css"> <!-- Incluimos el archivo CSS -->
 </head>
-<body>
-    <h2>Video for Device ID: <?php echo htmlspecialchars($devIdno); ?></h2>
-    <iframe src="<?php echo $videoUrl; ?>" width="800" height="600"></iframe>
+<body class="video-body">
+    <header>
+        <h1>Device ID: <?php echo htmlspecialchars($devIdno); ?></h1>
+    </header>
+    <main>
+        <h2>Visualización de Videos</h2>
+        <div class="video-container">
+            <div class="video-box">
+                <div class="video-title">Video 1</div>
+                <div class="iframe-wrapper">
+                    <iframe src="<?php echo $videoUrl1; ?>"></iframe>
+                </div>
+            </div>
+            <div class="video-box">
+                <div class="video-title">Video 2</div>
+                <div class="iframe-wrapper">
+                    <iframe src="<?php echo $videoUrl2; ?>"></iframe>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- <footer>
+        &copy; <?php echo date('Y'); ?> Sistema de Videos - Todos los derechos reservados.
+    </footer> -->
 </body>
 </html>
+
+<!-- php -S localhost:8000 -->

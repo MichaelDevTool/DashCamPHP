@@ -1,11 +1,5 @@
 {
     "name": "toolrides/dashcam-proyecto",
-    "description": "Proyecto PHP para gestionar la visualización de videos de dashcam",
-    "type": "project",
-    "require": {
-        "vlucas/phpdotenv": "^5.6"
-    },
-    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Toolrides\\DashcamProyecto\\": "src/"
@@ -13,8 +7,9 @@
     },
     "authors": [
         {
-            "name": "Michael"
+            "name": "Michaelabx01",
+            "email": "anthonyvm000@gmail.com"
         }
     ],
-    "minimum-stability": "stable"
+    "require": {}
 }
